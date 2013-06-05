@@ -1,16 +1,16 @@
 {
-    "name" : "github-all-pages",
+    "name" : "request-all-pages",
     "version" : "0.0.0",
-    "description" : "Aggregates paged data for a github request into one by traversing all pages.",
+    "description" : "Aggregates paged data for a request into one by traversing all pages.",
     "main" : "index.js",
     "scripts" : {
         "test" : "tap test/*.js"
     },
     "repository" : {
         "type" : "git",
-        "url" : "git://github.com/thlorenz/github-all-pages.git"
+        "url" : "git://github.com/thlorenz/request-all-pages.git"
     },
-    "homepage" : "https://github.com/thlorenz/github-all-pages",
+    "homepage" : "https://github.com/thlorenz/request-all-pages",
     "dependencies" : {
     },
     "devDependencies" : {

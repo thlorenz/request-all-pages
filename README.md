@@ -1,3 +1,3 @@
-# github-all-pages
+# request-all-pages
 
-    Aggregates paged data for a github request into one by traversing all pages.
+Aggregates paged data for a request into one by traversing all pages.
