@@ -1,0 +1,26 @@
+{
+    "name" : "github-all-pages",
+    "version" : "0.0.0",
+    "description" : "Aggregates paged data for a github request into one by traversing all pages.",
+    "main" : "index.js",
+    "scripts" : {
+        "test" : "tap test/*.js"
+    },
+    "repository" : {
+        "type" : "git",
+        "url" : "git://github.com/thlorenz/github-all-pages.git"
+    },
+    "homepage" : "https://github.com/thlorenz/github-all-pages",
+    "dependencies" : {
+    },
+    "devDependencies" : {
+    },
+    "keywords": [] ,
+    "author" : {
+        "name" : "Thorsten Lorenz",
+        "email" : "thlorenz@gmx.de",
+        "url" : "http://thlorenz.com"
+    },
+    "license" : "MIT",
+    "engine" : { "node" : ">=0.6" }
+}
