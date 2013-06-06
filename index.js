@@ -2,6 +2,7 @@
 
 var request          =  require('request')
   , xtendUrl         =  require('extend-url')
+  , through          =  require('through')
   , queryLinkHeader  =  require('./lib/query-link-header')
   , withPagingParams =  require('./lib/with-paging-params')
   ;

@@ -12,9 +12,9 @@
   },
   "homepage": "https://github.com/thlorenz/request-all-pages",
   "dependencies": {
-    "through": "~2.3.4",
     "request": "~2.21.0",
-    "extend-url": "~0.1.0"
+    "extend-url": "~0.1.0",
+    "write-stream": "~0.4.3"
   },
   "devDependencies": {
     "tape": "~1.0.2",
