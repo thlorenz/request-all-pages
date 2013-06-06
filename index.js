@@ -1,7 +1,19 @@
 'use strict';
 
+// pagesize
+// [ headers]|header -- if array distribute the across reqs for each page
+// [ bodys]|body -- if array distribute the across reqs for each page
+//
+
+var qs = require('querystring')
+  , extend = require('util')._extend
+  , through = require('through');
 
 
+var opts = {
+    uri: 'https://api.github.com/users/thlorenz/repos/?somevalue=1&someothervalue=2' 
+  , json: true
+  , body: { }
+  , headers: {} 
+};
 
-
-var link = '<https://api.github.com/user/9287/repos?client_id=579929e71dadf664d8b8&client_secret=57544da13aa74556daecbda8ac15bcfb9d85f380&page=2&per_page=500>; rel="next", <https://api.github.com/user/9287/repos?client_id=579929e71dadf664d8b8&client_secret=57544da13aa74556daecbda8ac15bcfb9d85f380&page=3&per_page=500>; rel="last"'
