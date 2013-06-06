@@ -1,26 +1,29 @@
 {
-    "name" : "request-all-pages",
-    "version" : "0.0.0",
-    "description" : "Aggregates paged data for a request into one by traversing all pages.",
-    "main" : "index.js",
-    "scripts" : {
-        "test" : "tap test/*.js"
-    },
-    "repository" : {
-        "type" : "git",
-        "url" : "git://github.com/thlorenz/request-all-pages.git"
-    },
-    "homepage" : "https://github.com/thlorenz/request-all-pages",
-    "dependencies" : {
-    },
-    "devDependencies" : {
-    },
-    "keywords": [] ,
-    "author" : {
-        "name" : "Thorsten Lorenz",
-        "email" : "thlorenz@gmx.de",
-        "url" : "http://thlorenz.com"
-    },
-    "license" : "MIT",
-    "engine" : { "node" : ">=0.6" }
+  "name": "request-all-pages",
+  "version": "0.0.0",
+  "description": "Aggregates paged data for a request into one by traversing all pages.",
+  "main": "index.js",
+  "scripts": {
+    "test": "tap test/*.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/thlorenz/request-all-pages.git"
+  },
+  "homepage": "https://github.com/thlorenz/request-all-pages",
+  "dependencies": {},
+  "devDependencies": {
+    "tape": "~1.0.2",
+    "tap": "~0.4.3"
+  },
+  "keywords": [],
+  "author": {
+    "name": "Thorsten Lorenz",
+    "email": "thlorenz@gmx.de",
+    "url": "http://thlorenz.com"
+  },
+  "license": "MIT",
+  "engine": {
+    "node": ">=0.6"
+  }
 }
