@@ -20,10 +20,10 @@ function getPages (opts, current, acc, cb) {
     
     var links = queryLinkHeader(res.headers.link);
 
-    if (current >= links.last.page) return cb(null, acc); 
-
     opts.uri = xtendUrl(opts.uri, links.next.link);
     acc.push(res);
+
+    if (current >= links.last.page) return cb(null, acc); 
 
     process.nextTick(getPages.bind(null, opts, links.next.page, acc, cb));
   });
