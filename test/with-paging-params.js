@@ -31,3 +31,17 @@ test('with-paging-params - uri has no params', function (t) {
   )
   t.end()
 })
+
+test('with-paging-params - uri has authentication', function (t) {
+
+  var uri = 'https://joe:schmo@api.github.com/users/thlorenz/repos' 
+    , page = 1
+    , perPage = 10
+
+  t.equal(
+      withPagingParams(uri, page, perPage)
+    , 'https://joe:schmo@api.github.com/users/thlorenz/repos?per_page=10&page=1'
+    , 'adds paging params while preserving authentication'
+  )
+  t.end()
+})
