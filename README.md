@@ -54,7 +54,9 @@ airport, airport-cluster-example, amok-copter, astw, ....
 
     npm install request-all-pages 
 
-## ***requestAllPages(opts : Object, startPage : Number, perPage: Number[, callback : Function]) : Stream***
+## API
+
+***requestAllPages(opts : Object, startPage : Number, perPage: Number[, callback : Function]) : Stream***
 
 - **opts**: options passed to [request](https://github.com/mikeal/request) after the `uri` was modified to
   include paging information. The same opts will be used for all paging requests.
@@ -62,7 +64,7 @@ airport, airport-cluster-example, amok-copter, astw, ....
 - **perPage**: how many pages to ask for per request (the smaller this number, the more requests have to be made to get
   all data)
 - **callback**: `function (err, pages) {..}` if supplied, it will be called with an error or an array containing all
-  pages each with the following structure ( `{ headers: /* response headers */, body: /* response body */ })
+  pages each with the following structure ( `{ headers: /* response headers */, body: /* response body */ }`)
 
 If **no callback** is supplied, a `stream` is returned instead which emits `data` for each page and `error` if one
 occurs.
