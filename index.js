@@ -2,10 +2,16 @@
 
 var request          =  require('request')
   , xtendUrl         =  require('extend-url')
-  , through          =  require('through')
+  , Stream           =  require('stream')
   , queryLinkHeader  =  require('./lib/query-link-header')
   , withPagingParams =  require('./lib/with-paging-params')
   ;
+
+function writeStream() {
+  var s = new Stream();
+  s.writable = true;
+  return s;
+}
 
 function nextPage(opts, cb) {
   request(opts, function (err, res, body) {
@@ -16,18 +22,35 @@ function nextPage(opts, cb) {
 }
 
 function getPages (opts, current, acc, cb) {
+  var stream;
+
+  if (typeof cb !== 'function') { 
+    // cb will be the stream when this function is called recursively
+    stream = cb instanceof Stream ? cb : writeStream();  
+  }
+
   nextPage(opts, function (err, res) {
-    if (err) return cb(err);
+    if (err) { 
+      return stream 
+        ? (stream.emit('error', err), stream.end())
+        : cb(err);
+    }
+    if (stream) stream.emit('data', res); 
+    else        acc.push(res);
     
     var links = queryLinkHeader(res.headers.link);
+    if (!links)
+      return stream ? stream.end() : cb(null, acc); 
 
     opts.uri = xtendUrl(opts.uri, links.next.link);
-    acc.push(res);
 
-    if (current >= links.last.page) return cb(null, acc); 
+    if (current >= links.last.page)
+      return stream ? stream.end() : cb(null, acc); 
 
-    process.nextTick(getPages.bind(null, opts, links.next.page, acc, cb));
+    process.nextTick(getPages.bind(null, opts, links.next.page, acc, stream || cb));
   });
+
+  return stream;
 }
 
 module.exports = function (opts, startPage, perPage, cb) {
