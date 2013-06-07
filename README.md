@@ -1,8 +1,10 @@
 # request-all-pages [![build status](https://secure.travis-ci.org/thlorenz/request-all-pages.png)](http://travis-ci.org/thlorenz/request-all-pages)
 
-Aggregates paged data for a request into one by traversing all pages.
+Requests all pages of paginated data and emits them into a stream or aggregates them into an array.
 
-Follows the [link headers](http://tools.ietf.org/html/rfc5988) until it reaches the last page.
+Follows the [link headers](http://tools.ietf.org/html/rfc5988) until it reaches the last page. As an example see [github
+api pagination](http://developer.github.com/v3/#pagination)
+
 
 ```js
 var requestAllPages = require('request-all-pages'); 
@@ -30,11 +32,6 @@ requestAllPages(opts, startPage, pagesPer, function (err, pages) {
 });
 ```
 
-```
-airport, airport-cluster-example, amok-copter, astw, .... 
-```
-
-
 ```js
 // same using streaming interface
 requestAllPages(opts, startPage, pagesPer)
@@ -47,6 +44,10 @@ requestAllPages(opts, startPage, pagesPer)
     }
   ))
   .pipe(process.stdout);
+```
+
+```
+airport, airport-cluster-example, amok-copter, astw, .... 
 ```
 
 ## Installation
