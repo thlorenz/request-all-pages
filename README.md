@@ -60,7 +60,7 @@ airport, airport-cluster-example, amok-copter, astw, ....
 
 - **opts**: options passed to [request](https://github.com/mikeal/request) after the `uri` was modified to
   include paging information. The same opts will be used for all paging requests.
-- **startPage**: page to start at
+- **startPage**: the page to start at
 - **perPage**: how many pages to ask for per request (the smaller this number, the more requests have to be made to get
   all data)
 - **callback**: `function (err, pages) {..}` if supplied, it will be called with an error or an array containing all
