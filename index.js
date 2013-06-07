@@ -9,7 +9,7 @@ var request          =  require('request')
 
 function writeStream() {
   var s = new Stream();
-  s.writable = true;
+  s.readable = true;
   return s;
 }
 
@@ -32,20 +32,20 @@ function getPages (opts, current, acc, cb) {
   nextPage(opts, function (err, res) {
     if (err) { 
       return stream 
-        ? (stream.emit('error', err), stream.end())
+        ? (stream.emit('error', err), stream.emit('end'))
         : cb(err);
     }
-    if (stream) stream.emit('data', res); 
+    if (stream) stream.emit('data', JSON.stringify(res)); 
     else        acc.push(res);
     
     var links = queryLinkHeader(res.headers.link);
     if (!links)
-      return stream ? stream.end() : cb(null, acc); 
+      return stream ? stream.emit('end') : cb(null, acc); 
 
     opts.uri = xtendUrl(opts.uri, links.next.link);
 
     if (current >= links.last.page)
-      return stream ? stream.end() : cb(null, acc); 
+      return stream ? stream.emit('end') : cb(null, acc); 
 
     process.nextTick(getPages.bind(null, opts, links.next.page, acc, stream || cb));
   });

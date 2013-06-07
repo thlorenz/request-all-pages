@@ -18,7 +18,8 @@
   },
   "devDependencies": {
     "tape": "~1.0.2",
-    "tap": "~0.4.3"
+    "tap": "~0.4.3",
+    "through": "~2.3.4"
   },
   "keywords": [],
   "author": {

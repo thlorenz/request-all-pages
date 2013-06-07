@@ -2,7 +2,7 @@ var getAllPages = require('..');
 
 var env = process.env;
 var opts = {
-    uri: 'https://api.github.com/users/substack/repos?client_id=' + env.VALUEPACK_GITHUB_CLIENT_ID + '&client_secret=' + env.VALUEPACK_GITHUB_CLIENT_SECRET
+    uri: 'https://api.github.com/users/substack/repos'
   , json: true
   , body: {}
   , headers: { 'user-agent': 'request-all-pages' } 
