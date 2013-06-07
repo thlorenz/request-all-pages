@@ -1,6 +1,6 @@
 {
   "name": "request-all-pages",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "Requests all pages of paginated data and emits them into a stream or aggregates them into an array.",
   "main": "index.js",
   "scripts": {
@@ -21,7 +21,15 @@
     "tap": "~0.4.3",
     "through": "~2.3.4"
   },
-  "keywords": ["pagination", "page", "pages", "paging", "request", "api", "follow"],
+  "keywords": [
+    "pagination",
+    "page",
+    "pages",
+    "paging",
+    "request",
+    "api",
+    "follow"
+  ],
   "author": {
     "name": "Thorsten Lorenz",
     "email": "thlorenz@gmx.de",
