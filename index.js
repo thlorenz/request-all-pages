@@ -3,7 +3,7 @@
 var request          =  require('request')
   , xtendUrl         =  require('extend-url')
   , Stream           =  require('stream')
-  , queryLinkHeader  =  require('./lib/query-link-header')
+  , parseLinkHeader  =  require('parse-link-header')
   , withPagingParams =  require('./lib/with-paging-params')
   ;
 
@@ -38,11 +38,11 @@ function getPages (opts, current, acc, cb) {
     if (stream) stream.emit('data', JSON.stringify(res)); 
     else        acc.push(res);
     
-    var links = queryLinkHeader(res.headers.link);
-    if (!links)
+    var links = parseLinkHeader(res.headers.link);
+    if (!links || !links.next)
       return stream ? stream.emit('end') : cb(null, acc); 
 
-    opts.uri = xtendUrl(opts.uri, links.next.link);
+    opts.uri = xtendUrl(opts.uri, links.next.url);
 
     if (current >= links.last.page)
       return stream ? stream.emit('end') : cb(null, acc); 
