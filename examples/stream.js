@@ -1,7 +1,6 @@
-var getAllPages = require('..')
+var requestAllPages = require('..')
   , through = require('through');
 
-var env = process.env;
 var opts = {
     uri: 'https://api.github.com/users/substack/repos'
   , json: true
@@ -11,7 +10,7 @@ var opts = {
   , startPage = 1
   , pagesPer = 100;
 
-getAllPages(opts, startPage, pagesPer)
+requestAllPages(opts, startPage, pagesPer)
   .on('error', console.error) 
   .pipe(through(
     function (data) {
