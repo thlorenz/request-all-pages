@@ -17,7 +17,7 @@ function nextPage(opts, cb) {
   request(opts, function (err, res, body) {
     if (err) return cb(err);  
     if (/^[45]\d\d/.test(res.statusCode)) return cb(body);
-    cb(null, { headers: res.headers, body: body });
+    cb(null, { headers: res.headers, statusCode: res.statusCode, body: body });
   });
 }
 
