@@ -44,7 +44,7 @@ function getPages (opts, current, acc, cb) {
 
     opts.uri = xtendUrl(opts.uri, links.next.url);
 
-    if (current >= links.last.page)
+    if (current >= parseInt(links.last.page, 10))
       return stream ? stream.emit('end') : cb(null, acc); 
 
     process.nextTick(getPages.bind(null, opts, links.next.page, acc, stream || cb));
