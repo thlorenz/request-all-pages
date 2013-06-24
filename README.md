@@ -5,10 +5,6 @@ Requests all pages of paginated data and emits them into a stream or aggregates 
 Follows the [link headers](http://tools.ietf.org/html/rfc5988) until it reaches the last page. As an example see [github
 api pagination](http://developer.github.com/v3/#pagination)
 
-## Installation
-
-    npm install request-all-pages 
-
 ```js
 var requestAllPages = require('request-all-pages'); 
 
@@ -31,6 +27,10 @@ requestAllPages(requestOpts, { startPage: 1, pagesPer: 100 }, function (err, pag
 
   console.log('%s\nTotal: %s', names.join(', '), names.length);
 });
+```
+
+```
+airport, airport-cluster-example, amok-copter, astw, .... 
 ```
 
 ### Default opts
@@ -57,10 +57,6 @@ requestAllPages(requestOpts, { startPage: 1, pagesPer: 100 })
   .pipe(process.stdout);
 ```
 
-```
-airport, airport-cluster-example, amok-copter, astw, .... 
-```
-
 ### Limit option
 
 ```js
@@ -83,6 +79,10 @@ requestAllPages(
 
 [Complete versions of these examples](https://github.com/thlorenz/request-all-pages/tree/master/examples).
 
+## Installation
+
+    npm install request-all-pages 
+
 ## API
 
 ***requestAllPages(requestOpts : Object[, opts: Object, callback : Function]) : Stream***
@@ -100,7 +100,13 @@ requestAllPages(
         returns data until `maxPages` is reached
 
 - **callback**: `function (err, pages) {..}` if supplied, it will be called with an error or an array containing all
-  pages each with the following structure ( `{ headers: /* response headers */, statusCode: /* response statusCode */, body: /* response body */ }`)
+  pages each with the following structure: 
+
+```js
+{ headers     // response headers 
+, statusCode  // response statusCode 
+, body      } // response body 
+```
 
 If **no callback** is supplied, a `stream` is returned instead which emits `data` for each page and `error` if one
 occurs.
