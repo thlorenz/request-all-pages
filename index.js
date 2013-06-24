@@ -21,36 +21,37 @@ function nextPage(opts, cb) {
   });
 }
 
-function getPages (opts, current, acc, cb) {
-  var stream;
+function initGetPages(opts, limit, startPage, cb) {
+  var stream = typeof cb !== 'function' ? writeStream() : null;
 
-  if (typeof cb !== 'function') { 
-    // cb will be the stream when this function is called recursively
-    stream = cb instanceof Stream ? cb : writeStream();  
+  function getPages (opts, current, acc) {
+
+    nextPage(opts, function (err, res) {
+      if (err) { 
+        return stream 
+          ? (stream.emit('error', err), stream.emit('end'))
+          : cb(err);
+      }
+
+      if (stream) { stream.emit('data', JSON.stringify(res)); }
+      else        acc.push(res);
+      
+      var links = parseLinkHeader(res.headers.link);
+      if (!links || !links.next)
+        return stream ? stream.emit('end') : cb(null, acc); 
+
+      opts.uri = xtendUrl(opts.uri, links.next.url);
+
+      if (current >= parseInt(links.last.page, 10))
+        return stream ? stream.emit('end') : cb(null, acc); 
+
+      process.nextTick(getPages.bind(null, opts, links.next.page, acc));
+    });
+
+    return stream;
   }
 
-  nextPage(opts, function (err, res) {
-    if (err) { 
-      return stream 
-        ? (stream.emit('error', err), stream.emit('end'))
-        : cb(err);
-    }
-    if (stream) { stream.emit('data', JSON.stringify(res)); }
-    else        acc.push(res);
-    
-    var links = parseLinkHeader(res.headers.link);
-    if (!links || !links.next)
-      return stream ? stream.emit('end') : cb(null, acc); 
-
-    opts.uri = xtendUrl(opts.uri, links.next.url);
-
-    if (current >= parseInt(links.last.page, 10))
-      return stream ? stream.emit('end') : cb(null, acc); 
-
-    process.nextTick(getPages.bind(null, opts, links.next.page, acc, stream || cb));
-  });
-
-  return stream;
+  return getPages(opts, startPage, []);
 }
 
 module.exports = function (requestOpts, opts, cb) {
@@ -60,8 +61,9 @@ module.exports = function (requestOpts, opts, cb) {
   }
 
   var startPage =  opts.startPage ===  void 0 ? 1 : opts.startPage
-    , perPage   =  opts.perPage   ===  void 0 ? 50 : opts.perPage;
+    , perPage   =  opts.perPage   ===  void 0 ? 50 : opts.perPage
+    , limit     =  opts.limit;     
 
   requestOpts.uri = withPagingParams(requestOpts.uri, startPage, perPage);
-  return getPages(requestOpts, startPage, [], cb)
+  return initGetPages(requestOpts, limit, startPage, cb)
 };
