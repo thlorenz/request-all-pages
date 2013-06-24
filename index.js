@@ -21,29 +21,58 @@ function nextPage(opts, cb) {
   });
 }
 
+function getPage(which, links) {
+  if (!links || !links[which] || !links[which].page) return null;
+
+  var n = parseInt(links[which].page, 10);
+  return isNaN(n) ? null: n;
+}
+var getLastPage = getPage.bind(1, 'last');
+var getNextPage = getPage.bind(1, 'next');
+
 function initGetPages(opts, limit, startPage, cb) {
   var stream = typeof cb !== 'function' ? writeStream() : null;
+
+  function end (acc) {
+    return stream ? stream.emit('end') : cb(null, acc);
+  }
+
+  function data (acc, res) {
+    if (stream) stream.emit('data', JSON.stringify(res));
+    else        acc.push(res);
+  }
 
   function getPages (opts, current, acc) {
 
     nextPage(opts, function (err, res) {
+      var links, lastPageNum, nextPageNum;
+
       if (err) { 
         return stream 
           ? (stream.emit('error', err), stream.emit('end'))
           : cb(err);
       }
 
-      if (stream) { stream.emit('data', JSON.stringify(res)); }
-      else        acc.push(res);
+      links = parseLinkHeader(res.headers.link);
+      lastPageNum = getLastPage(links);
+      nextPageNum = getNextPage(links);
+
+      // abort immediately if number of total pages exceeds the pages we allow and abort was requested
+      if ( limit 
+        && lastPageNum 
+        && limit.abort 
+        && limit.maxPages < lastPageNum) return end(acc);
+
+      data(acc, res);
       
-      var links = parseLinkHeader(res.headers.link);
-      if (!links || !links.next)
-        return stream ? stream.emit('end') : cb(null, acc); 
+      // end if either page info is missing or we reached the last page
+      if (!nextPage) return end(acc);
+      if (!lastPageNum || current >= lastPageNum) return end(acc);
 
+      // if we reached the max desired pages (in case immediate abort wasn't desired) end now
+      if (limit && limit.maxPages <= current) return end(acc); 
+         
       opts.uri = xtendUrl(opts.uri, links.next.url);
-
-      if (current >= parseInt(links.last.page, 10))
-        return stream ? stream.emit('end') : cb(null, acc); 
 
       process.nextTick(getPages.bind(null, opts, links.next.page, acc));
     });
