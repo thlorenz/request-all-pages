@@ -1,6 +1,6 @@
 var requestAllPages = require('..'); 
 
-var opts = {
+var requestOpts = {
     uri: 'https://api.github.com/users/substack/repos'
   , json: true
   , body: {}
@@ -9,7 +9,7 @@ var opts = {
   , startPage = 1
   , pagesPer = 100;
 
-requestAllPages(opts, startPage, pagesPer, function (err, pages) {
+requestAllPages(requestOpts, { startPage: startPage, pagesPer: pagesPer }, function (err, pages) {
   if (err) return console.error(err);  
   var names = pages
     .reduce(
