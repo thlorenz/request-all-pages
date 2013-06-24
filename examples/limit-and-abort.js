@@ -6,13 +6,12 @@ var requestOpts = {
   , json: true
   , body: {}
   , headers: { 'user-agent': 'request-all-pages' } 
-  }
-  , pagesPer = 100;
+  };
 
 // aborts immediately since last page > maxPages
 requestAllPages(
       requestOpts
-    , { pagesPer:  pagesPer, limit: { maxPages: 2, abort: true }  }
+    , { pagesPer: 100, limit: { maxPages: 2, abort: true }  }
   )
   .on('error', console.error) 
   .pipe(through(

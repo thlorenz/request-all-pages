@@ -5,11 +5,9 @@ var requestOpts = {
   , json: true
   , body: {}
   , headers: { 'user-agent': 'request-all-pages' } 
-  }
-  , startPage = 1
-  , pagesPer = 100;
+  };
 
-requestAllPages(requestOpts, { startPage: startPage, pagesPer: pagesPer }, function (err, pages) {
+requestAllPages(requestOpts, { startPage: 1, pagesPer: 100 }, function (err, pages) {
   if (err) return console.error(err);  
   var names = pages
     .reduce(

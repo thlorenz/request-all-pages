@@ -6,11 +6,9 @@ var requestOpts = {
   , json: true
   , body: {}
   , headers: { 'user-agent': 'request-all-pages' } 
-  }
-  , startPage = 1
-  , pagesPer = 100;
+  };
 
-requestAllPages(requestOpts, { startPage: startPage, pagesPer:  pagesPer })
+requestAllPages(requestOpts, { startPage: 1, pagesPer:  100 })
   .on('error', console.error) 
   .pipe(through(
     function (data) {

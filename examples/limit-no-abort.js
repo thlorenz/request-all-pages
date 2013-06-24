@@ -6,13 +6,12 @@ var requestOpts = {
   , json: true
   , body: {}
   , headers: { 'user-agent': 'request-all-pages' } 
-  }
-  , pagesPer = 100;
+  };
 
 // gets only the first 2 pages
 requestAllPages(
       requestOpts
-    , { pagesPer:  pagesPer, limit: { maxPages: 2, abort: false }  }
+    , { pagesPer: 100, limit: { maxPages: 2, abort: false }  }
   )
   .on('error', console.error) 
   .pipe(through(

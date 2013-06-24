@@ -17,11 +17,9 @@ var requestOpts = {
   , json: true
   , body: {}
   , headers: { 'user-agent': 'request-all-pages' } 
-  }
-  , startPage = 1
-  , pagesPer = 100;
+  };
 
-requestAllPages(requestOpts, { startPage: startPage, pagesPer: pagesPer }, function (err, pages) {
+requestAllPages(requestOpts, { startPage: 1, pagesPer: 100 }, function (err, pages) {
   if (err) return console.error(err);  
   var names = pages
     .reduce(
@@ -47,7 +45,7 @@ requestAllPages(requestOpts, function (err, pages) {
 ### Streaming Interface
 
 ```js
-requestAllPages(requestOpts, { startPage: startPage, pagesPer:  pagesPer })
+requestAllPages(requestOpts, { startPage: 1, pagesPer: 100 })
   .on('error', console.error) 
   .pipe(through(
     function (data) {
@@ -69,7 +67,7 @@ airport, airport-cluster-example, amok-copter, astw, ....
 // aborts immediately if last page > maxPages
 requestAllPages(
       requestOpts
-    , { pagesPer: pagesPer, limit: { maxPages: 2, abort: true }  }
+    , { pagesPer: 100, limit: { maxPages: 2, abort: true }  }
   )
   .pipe([...]);
 ```
@@ -78,7 +76,7 @@ requestAllPages(
 // gets only the first 2 pages even if there are more
 requestAllPages(
       requestOpts
-    , { pagesPer: pagesPer, limit: { maxPages: 2, abort: false }  } 
+    , { pagesPer: 100, limit: { maxPages: 2, abort: false }  } 
   )
   .pipe([...]);
 ```
