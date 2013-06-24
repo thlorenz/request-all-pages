@@ -3,12 +3,8 @@
 
 var test = require('tap').test
   , proxyquire = require('proxyquire')
+  , generateLink = require('./support/generate-link')
   , requestOpts = { uri: 'http://some.uri/' }
-
-function generateLink(page, perPage, items) {
-  return  '<http://some.uri/?page=' + page  + '&per_page=' + perPage +'>; rel="next", ' + 
-          '<http://some.uri/?page=' + (items/perPage) + '&per_page=' + perPage +'>; rel="last"';
-}
 
 test('\ngetting 200 items starting at page 1 with page size 20 callback interface', function (t) {
   var items = 200
@@ -26,7 +22,7 @@ test('\ngetting 200 items starting at page 1 with page size 20 callback interfac
       t.equal(opts.uri, 'http://some.uri/?per_page=' + perPage + '&page=' + page, 'passes request opts with adapted uri')
 
       page++;
-      cb(null, res, res.body)
+      setTimeout(cb.bind(0, null, res, res.body), 5)
     }
   })
 
@@ -67,7 +63,7 @@ test('\ngetting 200 items starting at page 1 with page size 20 streaming interfa
       t.equal(opts.uri, 'http://some.uri/?per_page=' + perPage + '&page=' + page, 'passes request opts with adapted uri')
 
       page++;
-      cb(null, res, res.body)
+      setTimeout(cb.bind(0, null, res, res.body), 5)
     }
   })
 
