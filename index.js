@@ -22,41 +22,33 @@ function nextPage(opts, cb) {
 }
 
 function getPages (opts, current, acc, cb) {
-  var stream, defer;
+  var stream;
 
   if (typeof cb !== 'function') { 
     // cb will be the stream when this function is called recursively
-    if (cb instanceof Stream) stream = cb
-    else {
-      stream = writeStream();  
-      defer = true;
+    stream = cb instanceof Stream ? cb : writeStream();  
+  }
+
+  nextPage(opts, function (err, res) {
+    if (err) { 
+      return stream 
+        ? (stream.emit('error', err), stream.emit('end'))
+        : cb(err);
     }
-  }
+    if (stream) { stream.emit('data', JSON.stringify(res)); }
+    else        acc.push(res);
+    
+    var links = parseLinkHeader(res.headers.link);
+    if (!links || !links.next)
+      return stream ? stream.emit('end') : cb(null, acc); 
 
-  if (defer) {
-    process.nextTick(getPages.bind(null, opts, current, acc, stream || cb));
-  } else {
-    nextPage(opts, function (err, res) {
-      if (err) { 
-        return stream 
-          ? (stream.emit('error', err), stream.emit('end'))
-          : cb(err);
-      }
-      if (stream) { stream.emit('data', JSON.stringify(res)); }
-      else        acc.push(res);
-      
-      var links = parseLinkHeader(res.headers.link);
-      if (!links || !links.next)
-        return stream ? stream.emit('end') : cb(null, acc); 
+    opts.uri = xtendUrl(opts.uri, links.next.url);
 
-      opts.uri = xtendUrl(opts.uri, links.next.url);
+    if (current >= parseInt(links.last.page, 10))
+      return stream ? stream.emit('end') : cb(null, acc); 
 
-      if (current >= parseInt(links.last.page, 10))
-        return stream ? stream.emit('end') : cb(null, acc); 
-
-      process.nextTick(getPages.bind(null, opts, links.next.page, acc, stream || cb));
-    });
-  }
+    process.nextTick(getPages.bind(null, opts, links.next.page, acc, stream || cb));
+  });
 
   return stream;
 }
