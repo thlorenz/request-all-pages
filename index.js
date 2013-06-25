@@ -27,8 +27,8 @@ function getPage(which, links) {
   var n = parseInt(links[which].page, 10);
   return isNaN(n) ? null: n;
 }
-var getLastPage = getPage.bind(1, 'last');
-var getNextPage = getPage.bind(1, 'next');
+var getLastPage = getPage.bind(0, 'last');
+var getNextPage = getPage.bind(0, 'next');
 
 function initGetPages(opts, limit, startPage, cb) {
   var stream = typeof cb !== 'function' ? writeStream() : null;
@@ -61,7 +61,13 @@ function initGetPages(opts, limit, startPage, cb) {
       if ( limit 
         && lastPageNum 
         && limit.abort 
-        && limit.maxPages < lastPageNum) return end(acc);
+        && limit.maxPages < lastPageNum) {
+          res.body = null;
+          res.aborted = true;
+          
+          data(acc, res);
+          return end(acc);
+        }
 
       data(acc, res);
       

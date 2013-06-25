@@ -96,17 +96,32 @@ requestAllPages(
 
   - **limit**: object with following properties
       - **maxPages**: the maximum number of pages to fetch
-      - **abort**: if `true` aborts immediately and returns empty if last page exceeds `maxPages`, fetches and
-        returns data until `maxPages` is reached
+      - **abort**: 
+          - if `true` aborts immediately and returns [empty response](#empty-response) with `aborted: true` if last page exceeds `maxPages`
+          - if `false` it fetches and returns data until `maxPages` is reached
 
 - **callback**: `function (err, pages) {..}` if supplied, it will be called with an error or an array containing all
   pages each with the following structure: 
 
+### response structure
+
 ```js
-{ headers     // response headers 
-, statusCode  // response statusCode 
-, body      } // response body 
+[ { headers      // response headers 
+  , statusCode   // response statusCode 
+  , body      }, // response body 
+  { .. },
+  .. ]
 ```
+
+### empty response
+
+```js
+[ { statusCode: xxx
+  , body: null
+  , headers: { ... }
+  , aborted: true } ]
+```
+
 
 If **no callback** is supplied, a `stream` is returned instead which emits `data` for each page and `error` if one
 occurs.

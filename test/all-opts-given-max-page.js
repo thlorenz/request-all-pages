@@ -52,7 +52,7 @@ test('\ngetting 200 items maxPages: 3, actual pages: 4, abort: true', function (
   var requestAll = proxyquire('..', {
     request: function (opts, cb) {
       var res = {
-          headers     : { link: generateLink(page + 1, perPage, items) }
+          headers     : { link: generateLink(page + 1, perPage, items), extra: 'stuff' }
         , statusCode  : 200
         , body        : 'data for page' + page
       }
@@ -67,17 +67,18 @@ test('\ngetting 200 items maxPages: 3, actual pages: 4, abort: true', function (
       , perPage   :  perPage
       , limit     :  { maxPages :  3, abort :  true }
       }
-    , function (err, res) {
-    var data = res.map(function (r) { return r.body })
-    
-    t.equal(page, 2, 'gets first page')
-    t.deepEqual(
-        data
-      , []
-      , 'returns no pages'
-    )
-    t.end()
-  })
+    , function (err, responses) {
+        var res = responses[0]
+
+        t.equal(page, 2, 'gets first page')
+        t.equal(responses.length, 1, 'returns one response')
+
+        t.ok(res.aborted, 'aborted flag is set')
+        t.equal(res.body, null, 'response body is null')
+        t.equal(res.statusCode, 200, 'status code is set')
+        t.equal(res.headers.extra, 'stuff', 'headers are set')
+        t.end()
+      })
 })
 
 test('\ngetting 200 items maxPages: 3, actual pages: 4, abort: false', function (t) {
@@ -126,7 +127,7 @@ test('\ngetting 200 items maxPages: 3, actual pages: 4, abort: true -- streaming
   var requestAll = proxyquire('..', {
     request: function (opts, cb) {
       var res = {
-          headers     : { link: generateLink(page + 1, perPage, items) }
+          headers     : { link: generateLink(page + 1, perPage, items), extra: 'stuff' }
         , statusCode  : 200
         , body        : 'data for page' + page
       }
@@ -147,14 +148,16 @@ test('\ngetting 200 items maxPages: 3, actual pages: 4, abort: true -- streaming
   .on('error', t.fail.bind(t, 'should have no error'))
   .on('data', [].push.bind(responses))
   .on('end', function () {
-    var data = responses.map(function (r) { return JSON.parse(r).body })
-    
+
     t.equal(page, 2, 'gets first page')
-    t.deepEqual(
-        data
-      , []
-      , 'returns no pages'
-    )
+    t.equal(responses.length, 1, 'returns one response')
+
+    var res = JSON.parse(responses[0])
+
+    t.ok(res.aborted, 'aborted flag is set')
+    t.equal(res.body, null, 'response body is null')
+    t.equal(res.statusCode, 200, 'status code is set')
+    t.equal(res.headers.extra, 'stuff', 'headers are set')
     t.end()
   })
 })
