@@ -1,7 +1,7 @@
 'use strict';
 /*jshint asi: true */
 
-var test = require('tap').test
+var test = require('tape')
   , proxyquire = require('proxyquire')
   , generateLink = require('./support/generate-link')
   , requestOpts = { uri: 'http://some.uri/' }

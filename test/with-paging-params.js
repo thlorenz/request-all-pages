@@ -1,7 +1,7 @@
 'use strict';
 /*jshint asi: true */
 
-var test = require('tap').test
+var test = require('tape')
   , withPagingParams = require('../lib/with-paging-params')
 
 test('with-paging-params - uri has params', function (t) {
