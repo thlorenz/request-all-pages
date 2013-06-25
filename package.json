@@ -4,11 +4,11 @@
   "description": "Requests all pages of paginated data and emits them into a stream or aggregates them into an array.",
   "main": "index.js",
   "scripts": {
-    "test-main" :  "tap test/*.js",
-    "test-0.8"  :  "nave use 0.8 npm run test-main",
-    "test-0.10" :  "nave use 0.10 npm run test-main",
-    "test-all"  :  "npm run test-0.8 && npm run test-0.10",
-    "test"      :  "if [ -e $TRAVIS ]; then npm run test-all; else npm run test-main; fi"
+    "test-main": "tap test/*.js",
+    "test-0.8": "nave use 0.8 npm run test-main",
+    "test-0.10": "nave use 0.10 npm run test-main",
+    "test-all": "npm run test-0.8 && npm run test-0.10",
+    "test": "if [ -e $TRAVIS ]; then npm run test-all; else npm run test-main; fi"
   },
   "repository": {
     "type": "git",
@@ -21,11 +21,11 @@
     "parse-link-header": "~0.1.0"
   },
   "devDependencies": {
-    "tape": "~1.0.2",
-    "tap": "~0.4.3",
     "through": "~2.3.4",
     "proxyquire": "~0.4.1",
-    "nave": "~0.4.3"
+    "nave": "~0.4.3",
+    "tape": "~1.0.4",
+    "tap": "~0.4.3"
   },
   "keywords": [
     "pagination",
