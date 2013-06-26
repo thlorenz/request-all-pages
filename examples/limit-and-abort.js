@@ -8,10 +8,11 @@ var requestOpts = {
   , headers: { 'user-agent': 'request-all-pages' } 
   };
 
+console.log('This example logs nothing to the console since it immediately aborts.');
 // aborts immediately since last page > maxPages
 requestAllPages(
       requestOpts
-    , { pagesPer: 100, limit: { maxPages: 2, abort: true }  }
+    , { perPage: 100, limit: { maxPages: 2, abort: true }  }
   )
   .on('error', console.error) 
   .pipe(through(

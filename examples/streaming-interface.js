@@ -8,13 +8,13 @@ var requestOpts = {
   , headers: { 'user-agent': 'request-all-pages' } 
   };
 
-requestAllPages(requestOpts, { startPage: 1, pagesPer:  100 })
+requestAllPages(requestOpts, { startPage: 1, perPage:  100 })
   .on('error', console.error) 
   .pipe(through(
     function (data) {
       var page = JSON.parse(data)
         , names = page.body.map(function (repo) { return repo.name; });
-      this.queue(names.join(', '));
+      this.queue(names.join(', ') + '\n');
     }
   ))
   .pipe(process.stdout);

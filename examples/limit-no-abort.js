@@ -11,14 +11,14 @@ var requestOpts = {
 // gets only the first 2 pages
 requestAllPages(
       requestOpts
-    , { pagesPer: 100, limit: { maxPages: 2, abort: false }  }
+    , { perPage: 100, limit: { maxPages: 2, abort: false }  }
   )
   .on('error', console.error) 
   .pipe(through(
     function (data) {
       var page = JSON.parse(data)
         , names = page.body.map(function (repo) { return repo.name; });
-      this.queue(names.join(', '));
+      this.queue(names.join(', ') + '\n');
     }
   ))
   .pipe(process.stdout);
