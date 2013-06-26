@@ -33,13 +33,14 @@ var getNextPage = getPage.bind(0, 'next');
 function initGetPages(opts, limit, startPage, cb) {
   var stream = typeof cb !== 'function' ? writeStream() : null;
 
-  function end (acc) {
-    return stream ? stream.emit('end') : cb(null, acc);
-  }
-
   function data (acc, res) {
     if (stream) stream.emit('data', JSON.stringify(res));
     else        acc.push(res);
+  }
+
+  function end (acc, res) {
+    data(acc, res);
+    return stream ? stream.emit('end') : cb(null, acc);
   }
 
   function getPages (opts, current, acc) {
@@ -59,24 +60,29 @@ function initGetPages(opts, limit, startPage, cb) {
 
       // abort immediately if number of total pages exceeds the pages we allow and abort was requested
       if ( limit 
-        && lastPageNum 
         && limit.abort 
+        && lastPageNum 
         && limit.maxPages < lastPageNum) {
-          res.body = null;
+          res.body = [];
           res.aborted = true;
-          
-          data(acc, res);
-          return end(acc);
-        }
+          return end(acc, res);
+      }
 
-      data(acc, res);
-      
       // end if either page info is missing or we reached the last page
-      if (!nextPage) return end(acc);
-      if (!lastPageNum || current >= lastPageNum) return end(acc);
+      if ( !nextPage
+        || !lastPageNum 
+        || current >= lastPageNum) { 
+          return end(acc, res);
+      }
 
       // if we reached the max desired pages (in case immediate abort wasn't desired) end now
-      if (limit && limit.maxPages <= current) return end(acc); 
+      if ( limit 
+        && limit.maxPages <= current) { 
+          res.aborted = true;
+          return end(acc, res); 
+      }
+
+      data(acc, res);
          
       opts.uri = xtendUrl(opts.uri, links.next.url);
 

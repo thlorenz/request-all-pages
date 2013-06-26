@@ -74,7 +74,7 @@ test('\ngetting 200 items maxPages: 3, actual pages: 4, abort: true', function (
         t.equal(responses.length, 1, 'returns one response')
 
         t.ok(res.aborted, 'aborted flag is set')
-        t.equal(res.body, null, 'response body is null')
+        t.deepEqual(res.body, [], 'response body is empty array')
         t.equal(res.statusCode, 200, 'status code is set')
         t.equal(res.headers.extra, 'stuff', 'headers are set')
         t.end()
@@ -107,6 +107,7 @@ test('\ngetting 200 items maxPages: 3, actual pages: 4, abort: false', function 
     , function (err, res) {
     var data = res.map(function (r) { return r.body })
     
+    t.ok(res.pop().aborted, 'aborted flag is set on last response')
     t.equal(page, 4, 'gets 3 pages')
     t.deepEqual(
         data
@@ -155,7 +156,7 @@ test('\ngetting 200 items maxPages: 3, actual pages: 4, abort: true -- streaming
     var res = JSON.parse(responses[0])
 
     t.ok(res.aborted, 'aborted flag is set')
-    t.equal(res.body, null, 'response body is null')
+    t.deepEqual(res.body, [], 'response body is empty array')
     t.equal(res.statusCode, 200, 'status code is set')
     t.equal(res.headers.extra, 'stuff', 'headers are set')
     t.end()
@@ -193,6 +194,7 @@ test('\ngetting 200 items maxPages: 3, actual pages: 4, abort: false -- streamin
   .on('end', function () {
     var data = responses.map(function (r) { return JSON.parse(r).body })
     
+    t.ok(JSON.parse(responses.pop()).aborted, 'aborted flag is set on last response')
     t.equal(page, 4, 'gets 3 pages')
     t.deepEqual(
         data

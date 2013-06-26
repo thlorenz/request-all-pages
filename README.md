@@ -117,7 +117,7 @@ requestAllPages(
 
 ```js
 [ { statusCode: xxx
-  , body: null
+  , body: []
   , headers: { ... }
   , aborted: true } ]
 ```
