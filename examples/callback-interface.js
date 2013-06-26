@@ -7,7 +7,7 @@ var requestOpts = {
   , headers: { 'user-agent': 'request-all-pages' } 
   };
 
-requestAllPages(requestOpts, { startPage: 1, pagesPer: 100 }, function (err, pages) {
+requestAllPages(requestOpts, { startPage: 1, perPage: 100 }, function (err, pages) {
   if (err) return console.error(err);  
   var names = pages
     .reduce(
