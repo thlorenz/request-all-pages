@@ -1,9 +1,13 @@
 'use strict';
 /*jshint asi: true */
 
-var test = require('tape')
-  , proxyquire = require('proxyquire')
+var debug //=  true;
+var test  =  debug  ? function () {} : require('tape')
+var test_ =  !debug ? function () {} : require('tape')
+
+var proxyquire = require('proxyquire')
   , generateLink = require('./support/generate-link')
+  , from = require('from')
   , requestOpts = { uri: 'http://some.uri/' }
 
 test('\ngetting 200 items maxPages: 4, actual pages: 4', function (t) {
@@ -12,15 +16,14 @@ test('\ngetting 200 items maxPages: 4, actual pages: 4', function (t) {
     , page = 1
 
   var requestAll = proxyquire('..', {
-    request: function (opts, cb) {
+    hyperquest: function (opts, cb) {
       var res = {
           headers     : { link: generateLink(page + 1, perPage, items) }
         , statusCode  : 200
-        , body        : 'data for page' + page
+        , pipe        : function (tgt) { return from(('data for page' + page).split('')).pipe(tgt); }
       }
 
-      page++;
-      setTimeout(cb.bind(0, null, res, res.body), 5)
+      setTimeout(function () { cb(null, res, res.body); page++ }, 5)
     }
   })
   requestAll(
@@ -30,18 +33,18 @@ test('\ngetting 200 items maxPages: 4, actual pages: 4', function (t) {
       , limit     :  { maxPages :  4, abort :  true }
       }
     , function (err, res) {
-    var data = res.map(function (r) { return r.body })
-    
-    t.deepEqual(
-        data
-      , [ 'data for page1',
-          'data for page2',
-          'data for page3',
-          'data for page4' ]
-      , 'gets all 4 pages'
-    )
-    t.end()
-  })
+        var data = res.map(function (r) { return r.body })
+        
+        t.deepEqual(
+            data
+          , [ 'data for page1',
+              'data for page2',
+              'data for page3',
+              'data for page4' ]
+          , 'gets all 4 pages'
+        )
+        t.end()
+      })
 })
 
 test('\ngetting 200 items maxPages: 3, actual pages: 4, abort: true', function (t) {
@@ -50,15 +53,14 @@ test('\ngetting 200 items maxPages: 3, actual pages: 4, abort: true', function (
     , page = 1
 
   var requestAll = proxyquire('..', {
-    request: function (opts, cb) {
+    hyperquest: function (opts, cb) {
       var res = {
           headers     : { link: generateLink(page + 1, perPage, items), extra: 'stuff' }
         , statusCode  : 200
-        , body        : 'data for page' + page
+        , pipe        : function (tgt) { return from(('data for page' + page).split('')).pipe(tgt); }
       }
 
-      page++;
-      setTimeout(cb.bind(0, null, res, res.body), 5)
+      setTimeout(function () { cb(null, res, res.body); page++ }, 5)
     }
   })
   requestAll(
@@ -87,15 +89,14 @@ test('\ngetting 200 items maxPages: 3, actual pages: 4, abort: false', function 
     , page = 1
 
   var requestAll = proxyquire('..', {
-    request: function (opts, cb) {
+    hyperquest: function (opts, cb) {
       var res = {
           headers     : { link: generateLink(page + 1, perPage, items) }
         , statusCode  : 200
-        , body        : 'data for page' + page
+        , pipe        : function (tgt) { return from(('data for page' + page).split('')).pipe(tgt); }
       }
 
-      page++;
-      setTimeout(cb.bind(0, null, res, res.body), 5)
+      setTimeout(function () { cb(null, res, res.body); page++ }, 5)
     }
   })
   requestAll(
@@ -126,15 +127,14 @@ test('\ngetting 200 items maxPages: 3, actual pages: 4, abort: true -- streaming
     , page = 1
 
   var requestAll = proxyquire('..', {
-    request: function (opts, cb) {
+    hyperquest: function (opts, cb) {
       var res = {
           headers     : { link: generateLink(page + 1, perPage, items), extra: 'stuff' }
         , statusCode  : 200
-        , body        : 'data for page' + page
+        , pipe        : function (tgt) { return from(('data for page' + page).split('')).pipe(tgt); }
       }
 
-      page++;
-      setTimeout(cb.bind(0, null, res, res.body), 5)
+      setTimeout(function () { cb(null, res, res.body); page++ }, 5)
     }
   })
 
@@ -169,15 +169,14 @@ test('\ngetting 200 items maxPages: 3, actual pages: 4, abort: false -- streamin
     , page = 1
 
   var requestAll = proxyquire('..', {
-    request: function (opts, cb) {
+    hyperquest: function (opts, cb) {
       var res = {
           headers     : { link: generateLink(page + 1, perPage, items) }
         , statusCode  : 200
-        , body        : 'data for page' + page
+        , pipe        : function (tgt) { return from(('data for page' + page).split('')).pipe(tgt); }
       }
 
-      page++;
-      setTimeout(cb.bind(0, null, res, res.body), 5)
+      setTimeout(function () { cb(null, res, res.body); page++ }, 5)
     }
   })
 

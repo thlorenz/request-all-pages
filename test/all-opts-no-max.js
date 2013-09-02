@@ -1,8 +1,12 @@
 'use strict';
 /*jshint asi: true */
 
-var test = require('tape')
-  , proxyquire = require('proxyquire')
+var debug// =  true;
+var test  =  debug  ? function () {} : require('tape')
+var test_ =  !debug ? function () {} : require('tape')
+
+var proxyquire = require('proxyquire')
+  , from = require('from')
   , generateLink = require('./support/generate-link')
   , requestOpts = { uri: 'http://some.uri/' }
 
@@ -12,17 +16,16 @@ test('\ngetting 200 items starting at page 1 with page size 20 callback interfac
     , page = 1
 
   var requestAll = proxyquire('..', {
-    request: function (opts, cb) {
+    hyperquest: function (opts, cb) {
       var res = {
           headers     : { link: generateLink(page + 1, perPage, items) }
         , statusCode  : 200
-        , body        : 'data for page' + page
+        , pipe        : function (tgt) { return from(('data for page' + page).split('')).pipe(tgt); }
       }
 
       t.equal(opts.uri, 'http://some.uri/?per_page=' + perPage + '&page=' + page, 'passes request opts with adapted uri')
 
-      page++;
-      setTimeout(cb.bind(0, null, res, res.body), 5)
+      setTimeout(function () { cb(null, res, res.body); page++ }, 5)
     }
   })
 
@@ -53,17 +56,16 @@ test('\ngetting 200 items starting at page 1 with page size 20 streaming interfa
     , page = 1
 
   var requestAll = proxyquire('..', {
-    request: function (opts, cb) {
+    hyperquest: function (opts, cb) {
       var res = {
           headers     : { link: generateLink(page + 1, perPage, items) }
         , statusCode  : 200
-        , body        : 'data for page' + page
+        , pipe        : function (tgt) { return from(('data for page' + page).split('')).pipe(tgt); }
       }
 
       t.equal(opts.uri, 'http://some.uri/?per_page=' + perPage + '&page=' + page, 'passes request opts with adapted uri')
 
-      page++;
-      setTimeout(cb.bind(0, null, res, res.body), 5)
+      setTimeout(function () { cb(null, res, res.body); page++ }, 5)
     }
   })
 

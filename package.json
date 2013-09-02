@@ -16,16 +16,18 @@
   },
   "homepage": "https://github.com/thlorenz/request-all-pages",
   "dependencies": {
-    "request": "~2.21.0",
     "extend-url": "~0.1.0",
-    "parse-link-header": "~0.1.0"
+    "parse-link-header": "~0.1.0",
+    "hyperquest": "~0.1.7",
+    "concat-stream": "~1.0.1"
   },
   "devDependencies": {
     "through": "~2.3.4",
     "proxyquire": "~0.4.1",
     "nave": "~0.4.3",
     "tape": "~1.0.4",
-    "tap": "~0.4.3"
+    "tap": "~0.4.3",
+    "from": "~0.1.3"
   },
   "keywords": [
     "pagination",

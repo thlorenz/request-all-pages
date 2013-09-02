@@ -1,7 +1,8 @@
 'use strict';
 
-var request          =  require('request')
+var hyperquest       =  require('hyperquest')
   , xtendUrl         =  require('extend-url')
+  , concatStream     =  require('concat-stream')
   , Stream           =  require('stream')
   , parseLinkHeader  =  require('parse-link-header')
   , withPagingParams =  require('./lib/with-paging-params')
@@ -14,10 +15,24 @@ function writeStream() {
 }
 
 function nextPage(opts, cb) {
-  request(opts, function (err, res, body) {
+  
+  hyperquest(opts, function (err, res) {
     if (err) return cb(err);  
-    if (/^[45]\d\d/.test(res.statusCode)) return cb(body);
-    cb(null, { headers: res.headers, statusCode: res.statusCode, body: body });
+
+    res.pipe(concatStream(function (data) {
+      var body = data.toString();
+      if (/^[45]\d\d/.test(res.statusCode)) return cb(body);
+
+      if (opts.json) {
+        try {
+          body = JSON.parse(body);
+        } catch (e) {
+          return cb(e);
+        }
+      }
+
+      cb(null, { headers: res.headers, statusCode: res.statusCode, body: body });
+    }));
   });
 }
 
@@ -95,7 +110,7 @@ function initGetPages(opts, limit, startPage, cb) {
   return getPages(opts, startPage, []);
 }
 
-module.exports = function (requestOpts, opts, cb) {
+var go = module.exports = function (requestOpts, opts, cb) {
   if (typeof opts === 'function') {
     cb = opts;
     opts = {};
