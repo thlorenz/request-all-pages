@@ -1,6 +1,6 @@
 {
   "name": "request-all-pages",
-  "version": "0.2.3",
+  "version": "0.3.0",
   "description": "Requests all pages of paginated data and emits them into a stream or aggregates them into an array.",
   "main": "index.js",
   "scripts": {
