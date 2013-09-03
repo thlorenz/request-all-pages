@@ -2,11 +2,13 @@
 
 var hyperquest       =  require('hyperquest')
   , xtendUrl         =  require('extend-url')
-  , concatStream     =  require('concat-stream')
+  , through          =  require('through')
   , Stream           =  require('stream')
   , parseLinkHeader  =  require('parse-link-header')
   , withPagingParams =  require('./lib/with-paging-params')
   ;
+
+var setImmediate = setImmediate || function (fn) { setTimeout(fn, 0) };
 
 function writeStream() {
   var s = new Stream();
@@ -16,11 +18,15 @@ function writeStream() {
 
 function nextPage(opts, cb) {
   
-  hyperquest(opts, function (err, res) {
+  function onresponse (err, res) {
     if (err) return cb(err);  
+    var body = '';
 
-    res.pipe(concatStream(function (data) {
-      var body = data.toString();
+    res.pipe(through(write, end));
+
+    function write (d) { body += d }
+
+    function end () {
       if (/^[45]\d\d/.test(res.statusCode)) return cb(body);
 
       if (opts.json) {
@@ -32,8 +38,10 @@ function nextPage(opts, cb) {
       }
 
       cb(null, { headers: res.headers, statusCode: res.statusCode, body: body });
-    }));
-  });
+    }
+  }
+
+  hyperquest(opts, onresponse);
 }
 
 function getPage(which, links) {
@@ -55,7 +63,8 @@ function initGetPages(opts, limit, startPage, cb) {
 
   function end (acc, res) {
     data(acc, res);
-    return stream ? stream.emit('end') : cb(null, acc);
+    if (stream) stream.emit('end'); 
+    else        cb(null, acc);
   }
 
   function getPages (opts, current, acc) {
@@ -80,14 +89,14 @@ function initGetPages(opts, limit, startPage, cb) {
         && limit.maxPages < lastPageNum) {
           res.body = [];
           res.aborted = true;
-          return end(acc, res);
+          return end(acc, res); 
       }
 
       // end if either page info is missing or we reached the last page
       if ( !nextPage
         || !lastPageNum 
         || current >= lastPageNum) { 
-          return end(acc, res);
+          return end(acc, res); 
       }
 
       // if we reached the max desired pages (in case immediate abort wasn't desired) end now
@@ -101,7 +110,8 @@ function initGetPages(opts, limit, startPage, cb) {
          
       opts.uri = xtendUrl(opts.uri, links.next.url);
 
-      process.nextTick(getPages.bind(null, opts, links.next.page, acc));
+      function getRemainingPages () { getPages(opts, links.next.page, acc); }
+      setImmediate(getRemainingPages);
     });
 
     return stream;

@@ -19,7 +19,7 @@
     "extend-url": "~0.1.0",
     "parse-link-header": "~0.1.0",
     "hyperquest": "~0.1.7",
-    "concat-stream": "~1.0.1"
+    "through": "~2.3.4"
   },
   "devDependencies": {
     "through": "~2.3.4",
