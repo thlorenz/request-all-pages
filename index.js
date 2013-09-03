@@ -29,7 +29,7 @@ function nextPage(opts, cb) {
     function end () {
       if (/^[45]\d\d/.test(res.statusCode)) return cb(body);
 
-      if (opts.json) {
+      if (body.length && opts.json) {
         try {
           body = JSON.parse(body);
         } catch (e) {
